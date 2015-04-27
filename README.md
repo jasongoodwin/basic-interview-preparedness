@@ -70,4 +70,4 @@ Given "(d(dd)r)z(" return false. This has an extra closing bracket.
 
 The aproach I took was to add 1 for every open bracket and subtract one for every closed bracket. Each iteration you check to see if the number is a positive and at the end evaluate if the value is 0.
 
-Likely a more flexible solution is to use a heap. 
+A more flexible solution would be a heap where you place unclosed braces on the heap and pop one off every time a bracket is closed. They're both more or less the same but the heap adds some flexibility incase you are asked to use different bracket types at the end of your implementation. 
