@@ -104,5 +104,6 @@ In an interview I was in, I was asked how I would implement handling '{[()]}' af
     
 This is a fairly simple solution. This foregoes the Try so it's a bit less efficient best case complexity but is simpler, eliminating effects. We have to use headOption incase the heap/list is empty.
 
-The problem with the implementation is that it no longer short circuits if the case of failure. We could use recursion as a more efficient solution, but trying to use combinators is good excercise. As per Erik Meijer, "Recursion is the Goto of Functional Programming.'
+Finally, to improve the runtime complexity, we could change the solution to use recursion - the solution now will always traverse the entire list of characters. I think the fold is a clearer solution though and would tend to use it whenever whiteboarding as it's clearer, more concise, and easier to structure than recursion. 
+
 
