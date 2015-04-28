@@ -71,3 +71,38 @@ Given "(d(dd)r)z(" return false. This has an extra closing bracket.
 The aproach I took was to add 1 for every open bracket and subtract one for every closed bracket. Each iteration you check to see if the number is a positive and at the end evaluate if the value is 0.
 
 A more flexible solution would be a heap where you place unclosed braces on the heap and pop one off every time a bracket is closed. They're both more or less the same but the heap adds some flexibility incase you are asked to use different bracket types at the end of your implementation. 
+
+    import scala.util.Try
+    def bracketBalanced(input: String): Boolean = {
+      Try(input.foldLeft(List.empty[Char])((z,char) => {
+        char match {
+          case '(' => char :: z ::: Nil
+          case ')' =>
+            if (z.head == '(') z.tail
+            else throw new Exception("incorrectly closed")
+          case _ => z
+        }
+      }).size == 0).getOrElse(false)
+    }
+    
+This is not a very good first attempt - it has a few unclear effects. It throws an exception for flow control as an optimization, but also calling z.head will throw an exception if z is empty. You could simply add the value to the heap which would increase the readability at the expensive of worse best-case runtime complexity. We'll do this next and add a twist.
+
+In an interview I was in, I was asked how I would implement handling '{[()]}' after finishing my implementation. Using the linked-list as a heap, this is a fairly simple task. We clean up the exceptions here at the cost of traversing the entire string.
+
+    def bracketBalanced(input: String): Boolean = {
+      input.foldLeft(List.empty[Char])((z,char) => {
+        char match {
+          case '(' | '{' | '[' => char :: z ::: Nil
+          case ')' if z.headOption == Some('(') => z.tail
+          case ']' if z.headOption == Some('[') => z.tail
+          case '}' if z.headOption == Some('{') => z.tail
+          case ')' | ']' | '}' => char :: z ::: Nil
+          case _ => z
+        }
+      }).size == 0
+    }
+    
+This is a fairly simple solution. This foregoes the Try so it's a bit less efficient best case complexity but is simpler, eliminating effects. We have to use headOption incase the heap/list is empty.
+
+The problem with the implementation is that it no longer short circuits if the case of failure. We could use recursion as a more efficient solution, but trying to use combinators is good excercise. As per Erik Meijer, "Recursion is the Goto of Functional Programming.'
+
