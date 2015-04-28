@@ -2,15 +2,26 @@ Interview Preparedness
 ======================
 
 This will cover questions to use when interviewing a developer to check that candadites can indeed write code!
-This document will ignore imperative approaches and focus only on more functional approaches. Most any language now will give you functional features so these are nice easy approaches to use.
+This document will ignore imperative approaches and focus only on functional approaches in Scala. Most any language now will give you functional features so these are nice easy approaches to use if you're interviewing.
+
+I've been interviewing a great deal lately for enterprise developer roles and I'm very amazed by what whiteboarding and takehome assignments uncover about people's experience.
 
 General Approaches
 ------------------
 
 I've seen people ask to take these problems away and work on them on paper. If you're not sure how to approach a problem, simply start reasoning about the problem verbally. Say out loud "Well, we could start by defining the method" and just work from there. Start with a small piece, talk to the interviewer about what you're thinking. Stop and think about it but don't fall silent - reason out loud.
 
-Fizzbuzz
-========
+These are a great fit for phone interviews using something like collabedit - it's a bit hard to move text around on a whiteboard so a pre-screening call with some coding is a good start. The hire slow philosophy states that there should be multiple steps in the interview process. I feel that prescreening with coding, design and knowledge checking in person, and then a take-away assignment is a good basic process to use for evaluating resources. 
+
+For a takehome assignment I usually ask for a project that does something simple like determine word frequency in a document. The applicant should show good OO approaches like DI, Single Responsibility Principle etc and actually be able to submit a working project with unit tests. If an applicant is applying for a developer role and they can't follow instructions or build a simple working project, that may be a indicator that the developer has a bit less experience than you may need for the role you're filling.
+
+Face to Face
+------------
+
+For the face to face I generally go over an applicant's recent experience with them and ask them questions about everything they write. If they say they have SCJP/OCP, I ask about details like string interning. If they say they know Agile, I ask them about the ceremonies, how they would throw a retrospective. If they say they have ITIL/ITSM experience, I ask them the difference between incident and problem management. If they say they know about distributed computing, I ask them about CAP theorem. If they say they know about high availability, I ask them to show me how they would design a system for 0 downtime deployments. In my experience, simply drilling into the experience people present will show if they do indeed understand the topics they claim to have experience in.
+
+Live Coding: Jr Assignment - Fizzbuzz
+=====================================
 
 If you're more junior, I'd probably ask for Fizzbuzz. For the numbers 1 to 100, print the number. If it is divisible by 3, print 'fizz' instead. If it is divisible by 5 print 'buzz' instead. If it is divisible by both, print 'fizzbuzz'.
 
@@ -48,8 +59,8 @@ There are other approaches you could take but if someone is asking you to show t
       case (current, _, _) => println(current)
     })
     
-String Reversal
-===============
+Live Coding: Jr Assignment - String Reversal
+============================================
 String reversal was the first software development interview question posed to me. An applicant should be able to write basic code on a whiteboard - String Reversal is an easy enough question to answer but suprisingly not many people can actually do it.
 
 There are a few variations you probably want to be aware of. 
@@ -70,8 +81,9 @@ Erik Meijer said that "recursion is the goto of functional programming". Folds a
 
 It has all of the elements of the recursive call but the structure of the fold takes care of the collector and the recursive call. You can see that it's much more succinct. Folds are a great thing to learn - they can really whittle down any recursive functions you need to write to a much simpler form.
 
-Bracket Matching
-================
+Live Coding: Intermediate Assignment - Bracket Balance
+======================================================
+
 Build a function that takes a string as input and determines if the brackets are balanced. 
 Given "(x(x)xx)" return true.
 Given "(x)a)a(a" return false. This closes a bracket before one is opened.
@@ -94,4 +106,27 @@ A more flexible solution would be a heap where you place unclosed braces on the 
       }).size == 0).getOrElse(false)
     }
 
-I interviewed with PagerDuty and they did ask me how I would change the code if I had to now deal with cases like "({[]})." Using a heap is flexible enough to handle this case.
+This is arguably not a very good first attempt - it has a few unclear effects. It throws an exception for flow control as an optimization, but also calling z.head will throw an exception if z is empty which is a very unclear effect. You could simply add the value to the heap which would increase the readability at the expensive of worse best-case runtime complexity. We'll do this next and add a twist.
+
+In an interview I was in, I was asked how I would implement handling '{[()]}' after finishing my implementation. Using the linked-list as a heap, this is a fairly simple task. We clean up the exceptions here at the cost of traversing the entire string.
+
+    def bracketBalanced(input: String): Boolean = {
+      input.foldLeft(List.empty[Char])((z,char) => {
+        char match {
+          case '(' | '{' | '[' => char :: z ::: Nil
+          case ')' if z.headOption == Some('(') => z.tail
+          case ']' if z.headOption == Some('[') => z.tail
+          case '}' if z.headOption == Some('{') => z.tail
+          case ')' | ']' | '}' => char :: z ::: Nil
+          case _ => z
+        }
+      }).size == 0
+    }
+    
+This is a fairly simple solution. This foregoes the Try so it's a bit less efficient best case complexity but is simpler, eliminating effects. We have to use headOption incase the heap/list is empty.
+
+Finally, to improve the runtime complexity, we could change the solution to use recursion - the solution now will always traverse the entire list of characters. I think the fold is a clearer solution though and would tend to use it whenever whiteboarding as it's clearer, more concise, and easier to structure than recursion. 
+
+Conclusion
+==========
+Here are a few common whiteboard excercises I personally like to throw at people who are interviewing, as well as general interviewing approaches. I think you should be able to reason through problems like these on the white board or in collab edit without an IDE's help - it only takes a bit of preparation to get comfortable enough to work out simple challenges on a whiteboard.
