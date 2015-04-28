@@ -37,7 +37,16 @@ Okay now we have the structure defined - we can fill in the implementation with 
       }
     }
 
-You could use conditionals. You aren't being asked to refactor it or save the world. Just answer it simply.    
+You aren't being asked to refactor it or save the world. Just answer it simply.    
+There are other approaches you could take but if someone is asking you to show them fizzbuzz they just want to make sure you can actually write code.
+
+    val tuples = for(x <- 1 to 100) yield(x, x%3, x%5)
+    tuples.foreach(x => x match {
+      case (_, 0, 0) => println("fizzbuzz")
+      case (_, 0, _) => println("fizz")
+      case (_, _, 0) => println("buzz")
+      case (current, _, _) => println(current)
+    })
     
 String Reversal
 ===============
@@ -59,7 +68,7 @@ Erik Meijer said that "recursion is the goto of functional programming". Folds a
 
     def reverseString(input: String) = input.foldRight("")((z, x) => x + z)
 
-It has all of the elements of the recursive call but the structure of the fold takes care of the collector and the recursive call. 
+It has all of the elements of the recursive call but the structure of the fold takes care of the collector and the recursive call. You can see that it's much more succinct. Folds are a great thing to learn - they can really whittle down any recursive functions you need to write to a much simpler form.
 
 Bracket Matching
 ================
@@ -73,37 +82,16 @@ The aproach I took was to add 1 for every open bracket and subtract one for ever
 A more flexible solution would be a heap where you place unclosed braces on the heap and pop one off every time a bracket is closed. They're both more or less the same but the heap adds some flexibility incase you are asked to use different bracket types at the end of your implementation. 
 
     import scala.util.Try
-    def bracketBalanced(input: String): Boolean = {
+    def bracketBalance(input: String): Boolean = {
       Try(input.foldLeft(List.empty[Char])((z,char) => {
         char match {
-          case '(' => char :: z ::: Nil
-          case ')' =>
+          case _ if char == '(' => char :: z ::: Nil
+          case _ if char == ')' =>
             if (z.head == '(') z.tail
-            else throw new Exception("incorrectly closed")
+            else throw new Exception("no match")
           case _ => z
         }
       }).size == 0).getOrElse(false)
     }
-    
-This is not a very good first attempt - it has a few unclear effects. It throws an exception for flow control as an optimization, but also calling z.head will throw an exception if z is empty. You could simply add the value to the heap which would increase the readability at the expensive of worse best-case runtime complexity. We'll do this next and add a twist.
 
-In an interview I was in, I was asked how I would implement handling '{[()]}' after finishing my implementation. Using the linked-list as a heap, this is a fairly simple task. We clean up the exceptions here at the cost of traversing the entire string.
-
-    def bracketBalanced(input: String): Boolean = {
-      input.foldLeft(List.empty[Char])((z,char) => {
-        char match {
-          case '(' | '{' | '[' => char :: z ::: Nil
-          case ')' if z.headOption == Some('(') => z.tail
-          case ']' if z.headOption == Some('[') => z.tail
-          case '}' if z.headOption == Some('{') => z.tail
-          case ')' | ']' | '}' => char :: z ::: Nil
-          case _ => z
-        }
-      }).size == 0
-    }
-    
-This is a fairly simple solution. This foregoes the Try so it's a bit less efficient best case complexity but is simpler, eliminating effects. We have to use headOption incase the heap/list is empty.
-
-Finally, to improve the runtime complexity, we could change the solution to use recursion - the solution now will always traverse the entire list of characters. I think the fold is a clearer solution though and would tend to use it whenever whiteboarding as it's clearer, more concise, and easier to structure than recursion. 
-
-
+I interviewed with PagerDuty and they did ask me how I would change the code if I had to now deal with cases like "({[]})." Using a heap is flexible enough to handle this case.
