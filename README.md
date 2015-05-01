@@ -129,4 +129,4 @@ Finally, to improve the runtime complexity, we could change the solution to use 
 
 Conclusion
 ==========
-Here are a few common whiteboard excercises I personally like to throw at people who are interviewing, as well as general interviewing approaches. I think you should be able to reason through problems like these on the white board or in collab edit without an IDE's help - it only takes a bit of preparation to get comfortable enough to work out simple challenges on a whiteboard.
+Here are a few common whiteboard excercises I personally like to throw at people who are interviewing, as well as general interviewing approaches. I think you should be able to reason through problems like these on the white board or in collab edit without an IDE's help - it only takes a bit of preparation to get comfortable enough to work out simple challenges on a whiteboard. These are not google interview questions - they're just basic whiteboard problems. 
