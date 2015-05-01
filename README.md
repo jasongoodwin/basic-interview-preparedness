@@ -75,7 +75,7 @@ You can use a recursive function to build the new string.
 
 Folds
 -----
-Erik Meijer said that "recursion is the goto of functional programming". Folds are more explicit in their structure and are a perfect fit for most any recursive processing needed. In this case, we go from right to left using foldRight and pin each element processed onto the end of the collector. This ends up being a much more succinct implementation.
+Erik Meijer said that "recursion is the goto of functional programming". Folds are more explicit in their structure and are a perfect fit for most any recursive processing needed when you need to recurse a structure in its entirety. In this case, we go from right to left using foldRight and pin each element processed onto the end of the collector. This ends up being a much more succinct implementation.
 
     def reverseString(input: String) = input.foldRight("")((z, x) => x + z)
 
