@@ -127,6 +127,40 @@ This is a fairly simple solution. This foregoes the Try so it's a bit less effic
 
 Finally, to improve the runtime complexity, we could change the solution to use recursion - the solution now will always traverse the entire list of characters. I think the fold is a clearer solution though and would tend to use it whenever whiteboarding as it's clearer, more concise, and easier to structure than recursion. 
 
+Basic Interview Question - Convert Excel Cell To Value
+------------------------------------------------------
+I saw this on the interview question list and it seems pretty simple.
+
+Write a function (with helper functions if needed) called to Excel that takes an excel column value (A,B,C,D…AA,AB,AC,… AAA..) and returns a corresponding integer value (A=1,B=2,… AA=26..).
+
+I chose to seperate validation of input, the convertion of the individual values, and the handling of the entirety of the input in seperate functions and then compose that together.
+
+    import scala.util.{Success, Failure, Try}
+    
+    def convertCharToVal(input: Char): Int = {
+      input-64
+    }
+    
+    def validateInput(input: String): Try[String] = {
+      val valid = input.foldLeft(true)((z,x) => {
+        if(z == false || x<'A' || x>'Z')
+          false
+        else
+          true
+      })
+    
+      if(valid)
+        Success(input)
+      else
+        Failure(new Exception("invalid input"))
+    }
+    
+    def convertCellToValueWithValidation(input: String): Try[Int] = {
+      validateInput(input).map(convertCharToValue(_))
+    }
+    
+    convertCellToValueWithValidation("ZZ") //52
+
 Conclusion
 ==========
 Here are a few common whiteboard excercises I personally like to throw at people who are interviewing, as well as general interviewing approaches. I think you should be able to reason through problems like these on the white board or in collab edit without an IDE's help - it only takes a bit of preparation to get comfortable enough to work out simple challenges on a whiteboard. These are not google interview questions - they're just basic whiteboard problems. 
