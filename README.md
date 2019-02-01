@@ -161,6 +161,19 @@ I chose to seperate validation of input, the convertion of the individual values
     
     convertCellToValueWithValidation("ZZ") //52
 
+
+Two Sum
+=======
+One of my favorites
+Given two lists, determine if any value from list a added to any value from list be is 0.
+
+lista = [1, 5, 7]
+listb = [-1, 6, 8]
+listc = [-100, 0, 4]
+
+twosum(lista, listb) == true //(-1 + 1 == 0)
+twosum(lista, listc) == false // nothing sums to 0
+
 Conclusion
 ==========
 Here are a few common whiteboard excercises I personally like to throw at people who are interviewing, as well as general interviewing approaches. I think you should be able to reason through problems like these on the white board or in collab edit without an IDE's help - it only takes a bit of preparation to get comfortable enough to work out simple challenges on a whiteboard. These are not google interview questions - they're just basic whiteboard problems. 
